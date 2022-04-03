@@ -1,5 +1,6 @@
 #include "Triangle.hpp"
 #include "rasterizer.hpp"
+#include <cmath>
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
 #include <opencv2/opencv.hpp>
@@ -20,24 +21,26 @@ Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos) {
 
 Eigen::Matrix4f get_model_matrix(float rotation_angle) {
   Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
-
-  // TODO: Implement this function
-  // Create the model matrix for rotating the triangle around the Z axis.
-  // Then return it.
-
+  float c = cos(rotation_angle / 180 * MY_PI);
+  float s = sin(rotation_angle / 180 * MY_PI);
+  model << c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
   return model;
 }
 
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar) {
-  // Students will implement this function
-
   Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
+  Eigen::Matrix4f sqizz, run, scale;
+  sqizz << zNear, 0, 0, 0, 0, zNear, 0, 0, 0, 0, zNear + zFar, -zNear * zFar, 0,
+      0, -1, 0;
 
-  // TODO: Implement this function
-  // Create the projection matrix for the given parameters.
-  // Then return it.
+  float t = zNear * tan(eye_fov / 2);
+  float r = aspect_ratio * t;
 
+  run << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -(zNear + zFar) / 2, 0, 0, 0, 1;
+  scale << 1 / r, 0, 0, 0, 0, 1 / t, 0, 0, 0, 0, 2 / (zNear - zFar), 0, 0, 0, 0,
+      1;
+  projection = scale * run * sqizz * projection;
   return projection;
 }
 
