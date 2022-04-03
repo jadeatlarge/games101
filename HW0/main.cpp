@@ -4,7 +4,6 @@
 #include <iostream>
 
 int main() {
-
   // Basic Example of cpp
   std::cout << "Example of cpp \n";
   float a = 1.0, b = 2.0;
@@ -50,5 +49,14 @@ int main() {
   // TO DO: Define point P
   // TO DO: Define rotation matrix M
   // TO DO: M * P
+  Eigen::Vector3f point(2.0f, 1.0f, 1.0f);
+  Eigen::Matrix3f M;
+
+  float f = cos(45.0 / 180 * acos(-1));
+  M << f, -f, 1, f, f, 2, 0, 0, 1;
+  point = M * point;
+  std::cout << "***HW0 Start***\n";
+  std::cout << point << '\n';
+  std::cout << "***HW0 End***\n";
   return 0;
 }
